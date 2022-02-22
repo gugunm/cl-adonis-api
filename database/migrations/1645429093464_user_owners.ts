@@ -1,0 +1,31 @@
+import BaseSchema from '@ioc:Adonis/Lucid/Schema'
+
+export default class UserOwnersSchema extends BaseSchema {
+  protected tableName = 'user_owners'
+
+  public async up() {
+    this.schema.createTable(this.tableName, (table) => {
+      table.increments('id').primary()
+
+      table.string('username', 50).notNullable().unique()
+      table.string('email', 255).notNullable().unique()
+      table.string('password', 180).notNullable()
+      table.string('remember_me_token').nullable()
+      table.string('avatar').nullable()
+      table.dateTime('email_verified_at').nullable()
+      table.boolean('is_activated').notNullable().defaultTo(false)
+
+      /**
+       * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
+       */
+      table.timestamp('created_at', { useTz: true })
+      table.timestamp('updated_at', { useTz: true })
+
+      table.index(['id', 'username'])
+    })
+  }
+
+  public async down() {
+    this.schema.dropTable(this.tableName)
+  }
+}
